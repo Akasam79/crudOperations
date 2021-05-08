@@ -62,11 +62,9 @@ app.get("/db", async (req, res) => {
 app.post("/", async (req, res) => {
   try {
     const client = await pool.connect();
-    const bodyName = req.body.name;
-    const bodyEmail = req.body.email;
-    const bodyCountry = req.body.country;
+
     const result = await client.query(
-      "INSERT INTO users VALUES (bodyName,bodyEmail, bodyCountry) "
+      "INSERT INTO users (name, email, country) VALUES (req.body.name, req.body.email, req.body.country) "
     );
     if (result) {
       return res.status(200).json({ message: "New client added successfully" });
