@@ -83,9 +83,7 @@ app.post("/", (req, res) => {
       country: req.body.country,
     },
     (err, result) => {
-      const result = client.query(
-        "INSERT INTO users VALUES (name, email, country)"
-      );
+      result = client.query("INSERT INTO users VALUES (name, email, country)");
       if (err)
         return res.status(500).json({ message: "Internal Server error" });
       return res.status(200).json({ message: "New client added successfully" });
