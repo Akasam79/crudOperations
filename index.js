@@ -59,21 +59,21 @@ app.get("/db", async (req, res) => {
   }
 });
 
-app.post("/", async (req, res) => {
-  try {
-    const client = await pool.connect();
-    const result = await client.query(
-      "INSERT INTO users VALUES ('req.body.name', 'req.body.email', 'req.body.country')"
-    );
-    if (result) {
-      return res.status(200).json({ message: "New client added successfully" });
-    }
-    client.release();
-  } catch (err) {
-    console.error(err);
-    res.send("Error " + err);
-  }
-});
+// app.post("/", async (req, res) => {
+//   try {
+//     const client = await pool.connect();
+//     const result = await client.query(
+//       "INSERT INTO users VALUES ('req.body.name', 'req.body.email', 'req.body.country')"
+//     );
+//     if (result) {
+//       return res.status(200).json({ message: "New client added successfully" });
+//     }
+//     client.release();
+//   } catch (err) {
+//     console.error(err);
+//     res.send("Error " + err);
+//   }
+// });
 
 app.post("/", (req, res) => {
 
@@ -84,7 +84,7 @@ app.post("/", (req, res) => {
       country: req.body.country
       },
       (err, result) => { 
-          
+
       const result =client.query(
       "INSERT INTO users VALUES (name, email, country)"
     );
