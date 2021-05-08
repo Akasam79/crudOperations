@@ -87,6 +87,7 @@ app.post("/", (req, res) => {
       if (err)
         return res.status(500).json({ message: "Internal Server error" });
       return res.status(200).json({ message: "New client added successfully" });
+      client.release();
     }
   );
 });
