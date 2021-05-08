@@ -3,25 +3,34 @@ const app = express();
 
 // const MongoClient = require("mongodb").MongoClient;
 
-const mongoose = require("mongoose");
-const { Schema } = mongoose;
+const { Pool } = require("pg");
+const pool = new Pool({
+  connectionString:
+    "process.env.postgres://aezyhjljwrzmzp:167359ae9373233e094b4735fed7bbe0d0df339e733a4d1f001d4ea04bcf0ac1@ec2-18-215-111-67.compute-1.amazonaws.com:5432/d2vk90m4ddtrd1",
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
+
+// const mongoose = require("mongoose");
+// const { Schema } = mongoose;
 
 const connectionString = "mongodb://localhost:27017/users";
 
-mongoose.connect(
-  connectionString,
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  },
-  (err) => {
-    if (err) {
-      console.log("failed");
-    } else {
-      console.log("database connected successfully");
-    }
-  }
-);
+// mongoose.connect(
+//   connectionString,
+//   {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//   },
+//   (err) => {
+//     if (err) {
+//       console.log("failed");
+//     } else {
+//       console.log("database connected successfully");
+//     }
+//   }
+// );
 
 const ClientSchema = new Schema({
   name: String,
@@ -32,6 +41,19 @@ const ClientSchema = new Schema({
 const Client = mongoose.model("Client", ClientSchema);
 
 app.use(express.json());
+
+app.get("/db", async (req, res) => {
+  try {
+    const client = await pool.connect();
+    const result = await client.query("SELECT * FROM test_table");
+    const results = { results: result ? result.rows : null };
+    res.render("pages/db", results);
+    client.release();
+  } catch (err) {
+    console.error(err);
+    res.send("Error " + err);
+  }
+});
 
 app.get("/client", (req, res) => {
   Client.find({}, (err, result) => {
