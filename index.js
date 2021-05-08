@@ -41,6 +41,7 @@ const pool = new Pool({
 // const Client = mongoose.model("Client", ClientSchema);
 
 app.use(express.json());
+app.set("view engine", "ejs");
 
 app.get("/db", async (req, res) => {
   try {
