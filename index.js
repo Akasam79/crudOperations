@@ -59,37 +59,25 @@ app.get("/db", async (req, res) => {
   }
 });
 
-// app.post("/", async (req, res) => {
-//   try {
-//     const client = await pool.connect();
-//     const result = await client.query(
-//       "INSERT INTO users VALUES ('req.body.name', 'req.body.email', 'req.body.country')"
-//     );
-//     if (result) {
-//       return res.status(200).json({ message: "New client added successfully" });
-//     }
-//     client.release();
-//   } catch (err) {
-//     console.error(err);
-//     res.send("Error " + err);
-//   }
-// });
-
-app.post("/", (req, res) => {
-  const client = pool.connect(
-    {
+app.post("/", async (req, res) => {
+  try {
+    const client = await pool.connect({
       name: req.body.name,
       email: req.body.email,
       country: req.body.country,
-    },
-    (err, result) => {
-      result = client.query("INSERT INTO users VALUES (name, email, country)");
-      if (err)
-        return res.status(500).json({ message: "Internal Server error" });
+    });
+
+    const result = await client.query(
+      "INSERT INTO users VALUES (name, email, country)"
+    );
+    if (result) {
       return res.status(200).json({ message: "New client added successfully" });
-    },
-    client.release()
-  );
+    }
+    client.release();
+  } catch (err) {
+    console.error(err);
+    res.send("Error " + err);
+  }
 });
 
 // app.get("/client", (req, res) => {
