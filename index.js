@@ -62,9 +62,17 @@ app.get("/db", async (req, res) => {
 app.post("/", async (req, res) => {
   try {
     const client = await pool.connect();
-
+    var clientUpdates = {
+      name: req.body.name,
+      email: req.body.email,
+      country: req.body.country,
+    };
     const result = await client.query(
-      "INSERT INTO users VALUES (`req.body.name`, `req.body.email`, `req.body.country`)"
+      `INSERT INTO users  VALUES ( '${
+        "001" + Math.floor(Math.random() * 200000000)
+      }','${clientUpdates.name}', '${clientUpdates.email}', '${
+        clientUpdates.country
+      }')`
     );
     if (result) {
       return res.status(200).json({ message: "New client added successfully" });
@@ -75,14 +83,42 @@ app.post("/", async (req, res) => {
     res.send("Error " + err);
   }
 });
-app.delete("/user", async (req, res) => {
+
+app.put("/users", async (req, res) => {
   try {
     const client = await pool.connect();
-    const result = await client.query("SELECT * FROM users");
+    var clientUpdates = {
+      id: req.body.id,
+      name: req.body.name,
+      email: req.body.email,
+      country: req.body.country,
+    };
+
+    const result = await client.query(
+      `UPDATE users SET name = '${clientUpdates.name}', email = '${clientUpdates.email}', country = '${clientUpdates.country}' WHERE id = '${clientUpdates.id}' `
+    );
     if (result) {
-      const results = { results: result ? result.rows : null };
-      console.log(results);
-      res.send(results);
+      return res.status(200).json({ message: "update successfully" });
+    }
+    client.release();
+  } catch (err) {
+    console.error(err);
+    res.send("Error " + err);
+  }
+});
+
+app.delete("/users", async (req, res) => {
+  try {
+    const client = await pool.connect();
+    var clientUpdates = {
+      id: req.body.id,
+    };
+
+    const result = await client.query(
+      `DELETE FROM users WHERE ( id = '${clientUpdates.id}')`
+    );
+    if (result) {
+      return res.status(200).json({ message: "delete successfully" });
     }
     client.release();
   } catch (err) {
