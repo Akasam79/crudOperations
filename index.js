@@ -43,7 +43,7 @@ const pool = new Pool({
 app.use(express.json());
 app.set("view engine", "ejs");
 
-app.get("/db", async (req, res) => {
+app.get("/users", async (req, res) => {
   try {
     const client = await pool.connect();
     const result = await client.query("SELECT * FROM users");
