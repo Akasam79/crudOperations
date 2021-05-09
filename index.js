@@ -64,10 +64,25 @@ app.post("/", async (req, res) => {
     const client = await pool.connect();
 
     const result = await client.query(
-      "INSERT INTO users VALUES ('emma', 'emma@gmail.com', 'nigeria')"
+      "INSERT INTO users VALUES (`req.body.name`, `req.body.email,` `req.body.country`)"
     );
     if (result) {
       return res.status(200).json({ message: "New client added successfully" });
+    }
+    client.release();
+  } catch (err) {
+    console.error(err);
+    res.send("Error " + err);
+  }
+});
+app.delete("/user", async (req, res) => {
+  try {
+    const client = await pool.connect();
+    const result = await client.query("SELECT * FROM users");
+    if (result) {
+      const results = { results: result ? result.rows : null };
+      console.log(results);
+      res.send(results);
     }
     client.release();
   } catch (err) {
